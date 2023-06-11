@@ -1,0 +1,15 @@
+1. crear estructura de proyecto
+Custom-Environment
+├── custom-environment
+    └── env
+        └── custom_environment.py
+    └── custom_environment_v0.py
+├── README.md
+└── requirements.txt
+
+
+Como hacer setup del ambiente?
+Como comunicarse con el ambiente?
+Definir espacio de acciones
+Definir espacio de observaciones
+Definir esquema de rewards
