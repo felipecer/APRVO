@@ -48,8 +48,8 @@ class Agent:
         self._prefVelocity = prefVelocity
         self._goal = goal
 
-    def __iter__(self):
-        yield from {
+    def get_dict(self):
+        return {
             "name": self.name,
             "position": self.position,
             "neighborDist": self.neighborDist,
@@ -61,7 +61,10 @@ class Agent:
             "velocity": self.velocity,
             "prefVelocity" : self.prefVelocity,
             "goal": self.goal
-        }.items()
+        }
+
+    def __iter__(self):
+        yield from self.get_dict().items()
 
     def __str__(self):
         return json.dumps(dict(self), ensure_ascii=False)
@@ -102,11 +105,13 @@ class Obstacle():
         self.name = name
         self.polygon = polygon
 
-    def __iter__(self):
-        yield from {
+    def get_dict(self):
+        return {
             "name": self.name,
             "polygon": self.polygon
-        }.items()
+        }
+    def __iter__(self):
+        yield from self.get_dict().items()
 
     def __str__(self):
         return json.dumps(dict(self), ensure_ascii=False)
@@ -139,15 +144,25 @@ class Environment:
         self._agents = agents
         self._obstacles = obstacles
 
-    def __iter__(self):
-        yield from {
+    def get_dict(self):
+        return {
             "name": self.name,
             "agents": self.agents,
             "obstacles": self.obstacles
-        }.items()
+        }
+
+    def __iter__(self):
+        yield from self.get_dict().items()
 
     def __str__(self):
-        return json.dumps(dict(self), ensure_ascii=False)
+        env = { 
+            "environment": {
+                "name": self.name, 
+                "agents": [ agent.get_dict() for agent in self.agents], 
+                "obstacles": [ obstacle.get_dict() for obstacle in self.obstacles]
+                }
+            }
+        return json.dumps(env, ensure_ascii=False, indent=True)
 
     def __repr__(self):
         return self.__str__()
