@@ -17,7 +17,7 @@ print("Imports successful!") # If you see this printed to the console then insta
 
 
 
-environment = ser_utils.make_prebuilt_env("deadlock")
+environment = ser_utils.make_prebuilt_env("square")
 
 def InitGL():
     glShadeModel(GL_SMOOTH);                            # Enable Smooth Shading
@@ -27,7 +27,6 @@ def InitGL():
     glDepthFunc(GL_LEQUAL);                             # The Type Of Depth Testing To Do
     glEnable ( GL_COLOR_MATERIAL );
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
 
 def reshape(width, height):
     glViewport(0, 0, width, height)
@@ -45,9 +44,6 @@ def renderBitmapString(x,y, font, nombre):
     glRasterPos2f(x,y)
     for c in range (nombre):
         glutBitmapCharacter(font, *c)
-    
-
-
 
 def showScreen():
     glLineWidth(2)
@@ -59,14 +55,14 @@ def showScreen():
         time.sleep(0.01)
 
         positions = ['(%5.3f, %5.3f)' % sim.getAgentPosition(agent_no)
-                 for agent_no in (agents[0], agents[1], agents[2], agents[3])]
+                 for agent_no in range(len(agents))]
         print('step=%2i  t=%.3f  %s' % (step, sim.getGlobalTime(), '  '.join(positions)))
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) # Remove everything from screen (i.e. displays all white)
 
         glMatrixMode(GL_MODELVIEW)
         
 
-        for agent_no in range(4):
+        for agent_no in range(len(agents)):
             glPushMatrix()
             glTranslatef(*sim.getAgentPosition(agent_no),0)
             glColor3f(0.4,0.9,0.0)
@@ -80,27 +76,19 @@ def showScreen():
             #glEnd()
             glColor3f(0,0,0)
             glPopMatrix()
-
-
         
         glMatrixMode(GL_MODELVIEW)
 
         glPushMatrix();
         glTranslatef(0, 0, 0.0);
         glColor3f(0.0, 0.0, 0.0);
-        glBegin(GL_QUADS);
-        glVertex2f(200.0,   30.0);
-        glVertex2f(-200.0,   30.0);
-        glVertex2f(-200.0, 29.42);
-        glVertex2f(200.0, 29.42);
-        glEnd();
-                    
-        glBegin(GL_QUADS);
-        glVertex2f(200.0,   27.58);
-        glVertex2f(-200.0,   27.58);
-        glVertex2f(-200.0, 27.0);
-        glVertex2f(200.0, 27.0);
-        glEnd();
+
+        for i in range(number_obstacles):
+            glBegin(GL_QUADS);
+            for j in range(len(environment.obstacles[i].polygon)):
+                glVertex2f(environment.obstacles[i].polygon[j][0],environment.obstacles[i].polygon[j][1]);
+            glEnd();
+                
         glPopMatrix();
         glutSwapBuffers()
         glutPostRedisplay()  
@@ -127,8 +115,11 @@ for data in environment.agents:
 
 # Obstacles are also supported.
 #o1 = sim.addObstacle([(0.1, 0.1), (-0.1, 0.1), (-0.1, -0.1)])
+number_obstacles = 0
 for vertices in environment.obstacles:
     obstacle = sim.addObstacle(vertices.polygon)
+    number_obstacles = number_obstacles + 1
+
 
 sim.processObstacles()
 

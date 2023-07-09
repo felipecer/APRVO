@@ -3,7 +3,7 @@ import os
 import serialization.objects as objects
 
 def list_prebuilt_env():
-    return ["deadlock"]
+    return ["deadlock","square","3-room"]
 
 def make_env_from_json(path):
     with open(path) as file:

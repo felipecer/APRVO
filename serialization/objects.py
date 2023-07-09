@@ -162,7 +162,7 @@ class Environment:
                 "obstacles": [ obstacle.get_dict() for obstacle in self.obstacles]
                 }
             }
-        return json.dumps(env, ensure_ascii=False, indent=True)
+        return json.dumps(env, ensure_ascii=False, indent=False)
 
     def __repr__(self):
         return self.__str__()
